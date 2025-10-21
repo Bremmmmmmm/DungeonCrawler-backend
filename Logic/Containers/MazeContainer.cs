@@ -26,10 +26,8 @@ public class MazeContainer(IDalFactory dalFactory) : IMazeContainer
         AddExtraConnections();
         AssignRoomValues();
 
-        var maze = new Maze
+        var maze = new Maze(size)
         {
-            size = size,
-            visited = visited,
             hConnections = hConnections,
             vConnections = vConnections,
             roomValues = roomValues

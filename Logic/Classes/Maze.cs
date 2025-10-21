@@ -10,6 +10,16 @@ public class Maze
     public bool[,] vConnections { get; set; }
     public string[,] roomValues { get; set; }
 
+    
+    public Maze(int size)
+    {
+        this.size = size;
+        visited = new bool[size, size];
+        hConnections = new bool[size, size - 1];
+        vConnections = new bool[size - 1, size];
+        roomValues = new string[size, size];
+    }
+    
     public MazeDto ToDto()
     {
         return new MazeDto
@@ -49,4 +59,36 @@ public class Maze
         }
         return jagged;
     }
+    
+    public Maze(MazeDto dto)
+    {
+        size = dto.size;
+        hConnections = FromJagged(dto.hConnections);
+        vConnections = FromJagged(dto.vConnections);
+        roomValues = dto.roomValues == null ? null : FromJagged(dto.roomValues);
+        visited = new bool[size, size];
+    }
+
+    private static bool[,] FromJagged(bool[][] jagged)
+    {
+        int rows = jagged.Length;
+        int cols = jagged[0].Length;
+        var array = new bool[rows, cols];
+        for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            array[r, c] = jagged[r][c];
+        return array;
+    }
+
+    private static string[,] FromJagged(string[][] jagged)
+    {
+        int rows = jagged.Length;
+        int cols = jagged[0].Length;
+        var array = new string[rows, cols];
+        for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            array[r, c] = jagged[r][c];
+        return array;
+    }
 }
+
