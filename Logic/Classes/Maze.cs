@@ -15,7 +15,6 @@ public class Maze
         return new MazeDto
         {
             size = size,
-            visited = ToJagged(visited),
             hConnections = ToJagged(hConnections),
             vConnections = ToJagged(vConnections),
             roomValues = roomValues == null ? null : ToJagged(roomValues)
