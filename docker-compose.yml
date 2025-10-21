@@ -1,3 +1,4 @@
+name: Dungeon-Crawler
 version: '3.8'
 services:
   backend:
@@ -15,3 +16,11 @@ services:
       - REACT_APP_API_URL=http://backend:5195
     depends_on:
       - backend
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300

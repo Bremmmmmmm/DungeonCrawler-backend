@@ -1,8 +1,8 @@
 ﻿# Use the .NET 8.0 runtime as the base image for the final stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
-# Explicitly expose port 5000 to match your Docker Compose configuration
-EXPOSE 5000
+# Explicitly expose port 5195 to match your Docker Compose configuration
+EXPOSE 5195
 
 # Use the .NET 8.0 SDK for building the application
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
