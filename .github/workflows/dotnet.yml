@@ -39,4 +39,31 @@ jobs:
       with:
            name: Depcheck report
            path: ${{github.workspace}}/reports
+           
+    - name: Test with coverage
+      run: |
+        dotnet test --collect:"XPlat Code Coverage;Format=opencover;"
+        
+    - name: Install ReportGenerator tool
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Create Coverage Report
+      run: reportgenerator -reports:**/coverage.opencover.xml -targetdir:coverage/ -reporttypes:JsonSummary
+
+    - name: Upload coverage to artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-report
+        path: coverage/
+
+    - name: Fail if coverage is under 80%
+      run: |
+        jsonFile="coverage/Summary.json"
+        lineCoverage=$(grep -Po '"linecoverage": \K[0-9.]+' "$jsonFile")
+        echo "Line coverage is $lineCoverage%"
+                if (( $(echo "$lineCoverage < 80" |bc -l) )); then
+          echo "Code coverage is less than 80%"
+          exit 1
+        fi
+        
     
