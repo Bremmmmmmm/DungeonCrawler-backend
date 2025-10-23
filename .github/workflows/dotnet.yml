@@ -30,7 +30,7 @@ jobs:
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Create Coverage Report
-        run: reportgenerator -reports:**/coverage.opencover.xml -targetdir:coverage/ -reporttypes:Html;JsonSummary
+        run: reportgenerator -reports:**/coverage.opencover.xml -targetdir:coverage/ -reporttypes:JsonSummary
 
       - name: Run Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
