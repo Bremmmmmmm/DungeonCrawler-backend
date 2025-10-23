@@ -61,6 +61,7 @@ jobs:
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
             /d:sonar.host.url="https://sonarcloud.io"
+            /d:sonar.exclusions="reports/**"
 
       - name: Build the project
         run: dotnet build --no-incremental
