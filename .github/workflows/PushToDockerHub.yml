@@ -2,7 +2,7 @@ name: Build and Push to Docker Hub
 
 on:
   workflow_run:
-    workflows: [".Net"] 
+    workflows: [".NET Build and SonarCloud Analysis"] 
     types:
       - completed
 
