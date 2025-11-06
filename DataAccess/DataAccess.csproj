@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Database\" />
+      <ProjectReference Include="..\Interface\Interface.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Interface\Interface.csproj" />
+      <PackageReference Include="Npgsql" Version="10.0.0-rc.1" />
     </ItemGroup>
 
 </Project>

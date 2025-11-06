@@ -9,4 +9,9 @@ public class MazeInteractableHandler(IMazeInteractableContainer mazeInteractable
     {
         return await mazeInteractableContainer.getEnemy();
     }
+    
+    public async Task<ItemDto> getItemInArea(int areaId)
+    {
+        return await mazeInteractableContainer.getItemInArea(areaId);
+    }
 }

@@ -16,4 +16,14 @@ public class MazeInteractableController(ILogicFactoryBuilder logicFactoryBuilder
 
         return Ok(enemy);
     }
+
+    [HttpGet("GetItemInArea")]
+    public async Task<IActionResult> GetItemInArea(int areaId)
+    {
+        var item = await logicFactoryBuilder
+            .BuildHandlerFactory()
+            .BuildMazeInteractableHandler().getItemInArea(areaId);
+        
+        return Ok(item);
+    }
 }

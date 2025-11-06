@@ -6,7 +6,26 @@ namespace API;
 
 public class ConfigLoader : IConfigLoader
 {
-    private readonly Config _config = JsonSerializer.Deserialize<Config>(File.ReadAllText("config.json"), JsonOptionData.Default);
+    private readonly Config _config;
+
+    public ConfigLoader()
+    {
+        // Load JSON config
+        var jsonConfig = JsonSerializer.Deserialize<Config>(
+            File.ReadAllText("config.json"),
+            JsonOptionData.Default
+        );
+
+        // Check for environment variable override
+        var envConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+
+        if (!string.IsNullOrEmpty(envConnectionString))
+        {
+            jsonConfig!.DbConfig.ConnectionString = envConnectionString;
+        }
+
+        _config = jsonConfig!;
+    }
 
     public T GetConfig<T>()
     {

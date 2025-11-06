@@ -178,3 +178,7 @@ fabric.properties
 .vs/
 
 dungeon_backend.sln.DotSettings.user
+
+.env
+
+API/config.json

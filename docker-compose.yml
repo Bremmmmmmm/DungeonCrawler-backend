@@ -1,11 +1,17 @@
 name: Dungeon-Crawler
 version: '3.8'
+
 services:
   backend:
     image: bremmmmmmm/dungeon-backend:latest
     container_name: dungeon-backend
     ports:
       - "5195:5195"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - db
 
   frontend:
     image: bremmmmmmm/dungeon-frontend:latest
@@ -17,6 +23,19 @@ services:
     depends_on:
       - backend
 
+  db:
+    image: postgres:16
+    container_name: dungeon-db
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
@@ -24,3 +43,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 300
+
+volumes:
+  pgdata:

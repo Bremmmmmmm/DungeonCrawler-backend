@@ -2,5 +2,5 @@ namespace Interface.Config;
 
 public class DbConf
 {
-    public string ConnectionString { get; }
+    public string ConnectionString { get; set; } = string.Empty;
 }
