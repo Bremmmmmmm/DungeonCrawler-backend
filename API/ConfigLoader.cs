@@ -10,21 +10,25 @@ public class ConfigLoader : IConfigLoader
 
     public ConfigLoader()
     {
-        // Load JSON config
-        var jsonConfig = JsonSerializer.Deserialize<Config>(
-            File.ReadAllText("config.json"),
-            JsonOptionData.Default
-        );
-
-        // Check for environment variable override
+        // Read connection string from environment variable
         var envConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
 
-        if (!string.IsNullOrEmpty(envConnectionString))
+        if (string.IsNullOrEmpty(envConnectionString))
         {
-            jsonConfig!.DbConfig.ConnectionString = envConnectionString;
+            // Throw an exception if the environment variable is missing
+            throw new InvalidOperationException(
+                "ConnectionStrings__DefaultConnection environment variable is not set. " +
+                "Please provide the database connection string via environment variables."
+            );
         }
 
-        _config = jsonConfig!;
+        _config = new Config
+        {
+            DbConfig = new DbConf
+            {
+                ConnectionString = envConnectionString
+            }
+        };
     }
 
     public T GetConfig<T>()
