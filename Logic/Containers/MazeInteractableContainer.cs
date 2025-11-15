@@ -9,6 +9,7 @@ namespace Logic.Containers
     {
         private readonly IItemDal _itemDal;
         private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
         public MazeInteractableContainer(IDalFactory dalFactory)
         {
@@ -19,17 +20,10 @@ namespace Logic.Containers
         public async Task<EnemyDto> getEnemy()
         {
             var random = new Random();
-            int id = random.Next(1, 1026); // 1 to 1025 inclusive
-            string url = $"https://pokeapi.co/api/v2/pokemon/{id}";
+            int id = random.Next(1, 1026);
+            var url = $"https://pokeapi.co/api/v2/pokemon/{id}";
 
-            var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var pokeData = JsonSerializer.Deserialize<PokeApiResponse>(json, options)
-                           ?? throw new InvalidOperationException("Failed to parse Pokemon response.");
-
+            var pokeData = await FetchJsonAsync<PokeApiResponse>(url);
             if (pokeData.sprites == null)
                 throw new InvalidOperationException("Pokemon sprites missing in response.");
 
@@ -48,23 +42,25 @@ namespace Logic.Containers
                 return null;
 
             var random = new Random();
-            var index = random.Next(items.Count);
-            var item = items[index];
+            var item = items[random.Next(items.Count)];
 
-            string url = $"https://pokeapi.co/api/v2/item/{item.name}";
-            var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var pokeItem = JsonSerializer.Deserialize<PokeItemResponse>(json, options)
-                           ?? throw new InvalidOperationException("Failed to parse Pokemon item response.");
-
+            var url = $"https://pokeapi.co/api/v2/item/{item.name}";
+            var pokeItem = await FetchJsonAsync<PokeItemResponse>(url);
             if (pokeItem.sprites == null)
                 throw new InvalidOperationException("Item sprites missing in response.");
 
             item.sprite = pokeItem.sprites.@default;
             return item;
+        }
+
+        private async Task<T> FetchJsonAsync<T>(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(json, _jsonOptions)
+                   ?? throw new InvalidOperationException("Failed to parse response.");
         }
 
         // --- Helper classes for deserialization ---
